@@ -8,7 +8,7 @@ dist/
 build/
 out/
 
-# Variables de entorno (NUNCA subir)
+# Variables de entorno 
 .env
 .env.local
 .env.*.local
