@@ -20,7 +20,7 @@ export class SalesController {
         return this.salesService.create(dto, req.user.userId);
     }
 
-    @Get(':id')
+    @Get(':id')// /api/sales/{id}
     @RequirePermissions('sales.read')
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.salesService.findOneSale(id);
