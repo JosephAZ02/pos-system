@@ -1,20 +1,20 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import {Module} from '@nestjs/common';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {JwtModule} from '@nestjs/jwt';
+import {PassportModule} from '@nestjs/passport';
+import {ConfigModule, ConfigService} from '@nestjs/config';
 
-import { StringValue } from 'ms';
+import {StringValue} from 'ms';
 
-import { User } from './entities/user.entity';
-import { Role } from './entities/role.entity';
-import { Permission } from './entities/permission.entity';
-import { RolePermission } from './entities/role-permission.entity';
+import {User} from './entities/user.entity';
+import {Role} from './entities/role.entity';
+import {Permission} from './entities/permission.entity';
+import {RolePermission} from './entities/role-permission.entity';
 
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import {AuthService} from './auth.service';
+import {AuthController} from './auth.controller';
+import {JwtStrategy} from './strategies/jwt.strategy';
+import {PermissionsGuard} from '../../common/guards/permissions.guard';
 
 @Module({
     imports: [
@@ -35,4 +35,5 @@ import { PermissionsGuard } from '../../common/guards/permissions.guard';
     providers: [AuthService, JwtStrategy, PermissionsGuard],
     exports: [AuthService, PermissionsGuard],
 })
-export class AuthModule { }
+export class AuthModule {
+}
