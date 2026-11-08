@@ -23,7 +23,7 @@ export class SaleItem {
     product: Product;
 
     @Column({ length: 50 })
-    productSku: string;
+    productCode: string;
 
     @Column({ length: 150 })
     productName: string;

@@ -1,9 +1,20 @@
 export type PaymentMethod = 'CASH' | 'CARD' | 'TRANSFER';
 
+export interface CreateSaleItemRequest {
+    productId: number;
+    quantity: number;
+}
+
+export interface CreateSaleRequest {
+    items: CreateSaleItemRequest[];
+    paymentMethod: PaymentMethod;
+    amountPaid?: number;
+}
+
 export interface SaleItemDto {
     id: number;
     productId: number;
-    productSku: string;
+    productCode: string;
     productName: string;
     unitPrice: number;
     quantity: number;
