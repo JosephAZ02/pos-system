@@ -1,28 +1,36 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Role } from './role.entity';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import {Role} from './role.entity';
 
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ length: 100 })
+    @Column({length: 100})
     name: string;
 
-    @Column({ unique: true, length: 150 })
+    @Column({unique: true, length: 150})
     email: string;
 
-    @Column({ select: false })
+    @Column({select: false})
     password: string;
 
-    @Column({ default: true })
+    @Column({default: true})
     isActive: boolean;
 
     @Column()
     roleId: number;
 
-    @ManyToOne(() => Role, (role) => role.users, { eager: true })
-    @JoinColumn({ name: 'roleId' })
+    @ManyToOne(() => Role, (role) => role.users, {eager: true})
+    @JoinColumn({name: 'roleId'})
     role: Role;
 
     @CreateDateColumn()

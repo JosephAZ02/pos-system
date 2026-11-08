@@ -1,12 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {JwtService} from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { User } from './entities/user.entity';
-import { RolePermission } from './entities/role-permission.entity';
-import { LoginRequestDto } from './dto/login.dto';
+import {User} from './entities/user.entity';
+import {RolePermission} from './entities/role-permission.entity';
+import {LoginRequestDto} from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,13 +16,14 @@ export class AuthService {
         @InjectRepository(RolePermission)
         private readonly rolePermRepo: Repository<RolePermission>,
         private readonly jwtService: JwtService,
-    ) { }
+    ) {
+    }
 
     async login(dto: LoginRequestDto) {
         const user = await this.userRepo
             .createQueryBuilder('user')
             .addSelect('user.password')
-            .where('user.email = :email', { email: dto.email })
+            .where('user.email = :email', {email: dto.email})
             .getOne();
 
         if (!user || !user.isActive) {
@@ -35,7 +36,7 @@ export class AuthService {
         }
 
         const perms = await this.rolePermRepo.find({
-            where: { roleId: user.roleId },
+            where: {roleId: user.roleId},
             relations: {permission: true},
         });
         const permissions = perms.map((rp) => rp.permission.name);

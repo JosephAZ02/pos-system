@@ -1,4 +1,4 @@
-export interface ProductDto {
+export interface IProductDto {
     id: number;
     sku: string;
     name: string;
