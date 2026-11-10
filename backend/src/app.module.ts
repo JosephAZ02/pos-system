@@ -6,6 +6,8 @@ import {AuthModule} from './modules/auth/auth.module';
 import {ProductsModule} from "./modules/products/product.module";
 import {SalesModule} from './modules/sales/sales.module';
 
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+
 @Module({
     imports: [
         ConfigModule.forRoot({isGlobal: true}),
@@ -27,6 +29,7 @@ import {SalesModule} from './modules/sales/sales.module';
         AuthModule,
         ProductsModule,
         SalesModule,
+        DashboardModule
     ],
 })
 export class AppModule {
