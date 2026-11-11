@@ -1,6 +1,6 @@
 import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from 'typeorm';
-import {Role} from './role.entity';
-import {Permission} from './permission.entity';
+import {Role} from '../../roles/entities/role.entity';
+import {Permission} from '../../permissions/entities/permission.entity';
 
 @Entity('role_permissions')
 @Unique(['roleId', 'permissionId'])

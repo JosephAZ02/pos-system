@@ -1,5 +1,5 @@
 import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
-import {User} from '../../auth/entities/user.entity';
+import {User} from '../../users/entities/user.entity';
 import {decimalTransformer} from '../../../common/transformers/decimal.transformer';
 import {SaleItem} from './sale-item.entity';
 

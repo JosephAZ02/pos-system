@@ -1,5 +1,5 @@
 import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique} from 'typeorm';
-import {RolePermission} from './role-permission.entity';
+import {RolePermission} from '../../role-permissions/entities/role-permission.entity';
 
 @Entity('permissions')
 @Unique(['resource', 'action'])
