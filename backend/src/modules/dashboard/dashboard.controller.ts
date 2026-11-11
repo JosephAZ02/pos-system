@@ -7,19 +7,19 @@ import {DashboardFilterDto} from './dto/dashboard-filter.dto';
 @ApiTags('dashboard')
 @ApiBearerAuth()
 @Controller('dashboard')
-//@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class DashboardController {
     constructor(private readonly dashboardService: DashboardService) {
     }
 
     @Get('summary')
-    //@RequirePermissions('dashboard.read')
+    @RequirePermissions('dashboard.read')
     getSummary(@Query() filterDto: DashboardFilterDto) {
         return this.dashboardService.getSummary(filterDto);
     }
 
     @Get('top-products')
-    //@RequirePermissions('dashboard.read')
+    @RequirePermissions('dashboard.read')
     getTopProducts(
         @Query('limit') limit?: number,
         @Query() filterDto?: DashboardFilterDto,
