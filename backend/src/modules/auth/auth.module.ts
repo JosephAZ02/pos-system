@@ -9,7 +9,7 @@ import {StringValue} from 'ms';
 import {User} from '../users/entities/user.entity';
 import {Role} from '../roles/entities/role.entity';
 import {Permission} from '../permissions/entities/permission.entity';
-import {RolePermission} from '../role-permissions/entities/role-permission.entity';
+import {RolePermission} from './entities/role-permission.entity';
 
 import {AuthService} from './auth.service';
 import {AuthController} from './auth.controller';

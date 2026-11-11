@@ -5,9 +5,13 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {AuthModule} from './modules/auth/auth.module';
 import {ProductsModule} from "./modules/products/product.module";
 import {SalesModule} from './modules/sales/sales.module';
+import {UsersModule} from './modules/users/user.module';
+
 
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { RolesModule } from './modules/roles/role.module';
+import { PermissionsModule } from './modules/permissions/permission.module';
 
 @Module({
     imports: [
@@ -29,6 +33,9 @@ import { ReportsModule } from './modules/reports/reports.module';
         }),
         AuthModule,
         ProductsModule,
+        UsersModule,
+        RolesModule,
+        PermissionsModule,
         SalesModule,
         DashboardModule,
         ReportsModule
