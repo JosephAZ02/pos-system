@@ -1,7 +1,10 @@
-import {Controller, Get, Query} from '@nestjs/common';
+import {Controller, Get, Query, UseGuards} from '@nestjs/common';
 import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import {DashboardService} from './dashboard.service';
 import {DashboardFilterDto} from './dto/dashboard-filter.dto';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 
 @ApiTags('dashboard')

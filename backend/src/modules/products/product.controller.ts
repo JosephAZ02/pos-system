@@ -3,40 +3,38 @@ import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import {ProductService} from './product.service';
 import {CreateProductDto} from './dto/create-product.dto';
 import {UpdateProductDto} from './dto/update-product.dto';
-/*
-import {JwtAuthGuard} from '../../common/guards/jwt-auth.guard';
-import {PermissionsGuard} from '../../common/guards/permissions.guard';
-import {RequirePermissions} from '../../common/decorators/require-permissions.decorator';
-*/
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
-@ApiTags('products')
+@ApiTags('Productos')
 @ApiBearerAuth()
 @Controller('products')
-//@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ProductController {
     constructor(private readonly productService: ProductService) {
     }
 
     @Post()
-    //@RequirePermissions('products.create')
+    @RequirePermissions('products.create')
     create(@Body() request: CreateProductDto) {
         return this.productService.save(request);
     }
 
     @Get()
-    //@RequirePermissions('products.read')
+    @RequirePermissions('products.read')
     getAll() {
         return this.productService.getAll();
     }
 
     @Get(':id')
-    //@RequirePermissions('products.read')
+    @RequirePermissions('products.read')
     getById(@Param('id', ParseIntPipe) id: number) {
         return this.productService.getById(id);
     }
 
     @Patch(':id')
-    //@RequirePermissions('products.update')
+    @RequirePermissions('products.update')
     update(
         @Param('id', ParseIntPipe) id: number,
         @Body() request: UpdateProductDto,
@@ -45,7 +43,7 @@ export class ProductController {
     }
 
     @Delete(':id')
-    //@RequirePermissions('products.delete')
+    @RequirePermissions('products.delete')
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.productService.remove(id);
     }

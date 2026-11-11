@@ -5,7 +5,11 @@ import { Permission } from './entities/permission.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Permisos')
+@ApiBearerAuth()
 @Controller('permissions')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class PermissionsController {

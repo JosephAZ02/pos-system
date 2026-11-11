@@ -1,9 +1,12 @@
-import {Controller, Get, Query} from '@nestjs/common';
+import {Controller, Get, Query, UseGuards} from '@nestjs/common';
 import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import {ReportsService} from './reports.service';
 import {ReportFilterDto} from './dto/report-filter.dto';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
+import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
 
-@ApiTags('reports')
+@ApiTags('Reportes')
 @ApiBearerAuth()
 @Controller('reports')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
