@@ -35,12 +35,15 @@ export class DashboardService {
       .where('sale.createdAt BETWEEN :start AND :end', { start, end })
       .getRawOne();
 
-    // 2. Resumen de Productos
-    const totalProducts = await this.productRepository.count();
+    // 2. Resumen de Productos (usando minStock e isActive)
+    const totalProducts = await this.productRepository.count({
+      where: { isActive: true },
+    });
 
     const lowStockProducts = await this.productRepository
       .createQueryBuilder('product')
-      .where('product.stock <= :minStock', { minStock: 5 })
+      .where('product.stock <= product.minStock')
+      .andWhere('product.isActive = :isActive', { isActive: true })
       .getCount();
 
     return {
@@ -87,4 +90,4 @@ export class DashboardService {
       totalAmount: parseFloat(row.totalAmount || '0'),
     }));
   }
-}   
+}
