@@ -1,0 +1,29 @@
+.text-pos {
+    color: #10678a;
+}
+
+button.btn.btn-pos {
+    background-color: #1691c2;
+    border-color: #1691c2;
+    color: #ffffff;
+}
+
+button.btn.btn-pos:hover,
+button.btn.btn-pos:active {
+    background-color: #10678a;
+    border-color: #10678a;
+    color: #ffffff;
+}
+
+button.btn.btn-outline-pos {
+    background-color: transparent;
+    border-color: #1691c2;
+    color: #10678a;
+}
+
+button.btn.btn-outline-pos:hover,
+button.btn.btn-outline-pos:active {
+    background-color: #1691c2;
+    border-color: #1691c2;
+    color: #ffffff;
+}

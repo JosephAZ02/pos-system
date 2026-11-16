@@ -8,11 +8,16 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './index.css'; 
 import { AuthProvider } from './context/auth.context';
+import { CartProvider } from './context/CartContext';
+import { Toaster } from 'react-hot-toast';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <AuthProvider>
-            <App />
+            <CartProvider>
+                <App />
+                <Toaster position="top-right" />
+            </CartProvider>
         </AuthProvider>
     </React.StrictMode>,
 );

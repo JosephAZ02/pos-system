@@ -4,7 +4,7 @@ import { ProtectedRoute } from './components/auth/protected-route';
 import { DashboardPage } from './pages/other/dashboard-page';
 import AppLayout from './components/templates/app-layout';
 import { ProductsPage } from './pages/products/products-page';
-import { SalesPage } from './pages/sales/sales-page';
+import { PosRegisterPage } from './pages/pos/PosRegisterPage';
 import { ReportsPage } from './pages/reports/reports-page';
 import { UsersRolesPage } from './pages/auth/users-roles-page';
 
@@ -22,7 +22,7 @@ export default function App() {
                     <Route element={<AppLayout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/products" element={<ProductsPage />} />
-                        <Route path="/sales" element={<SalesPage />} />
+                        <Route path="/sales" element={<PosRegisterPage />} />
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="/users-roles" element={<UsersRolesPage />} />
                     </Route>
