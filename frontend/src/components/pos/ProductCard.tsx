@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import type {IProductDto} from '@pos/shared';
 import {formatColones} from '../../utils/formatters';
 
@@ -8,12 +9,27 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({product, quantityInCart, onAdd}: ProductCardProps) => {
+    const [imageFailed, setImageFailed] = useState(false);
     const noStockLeft = quantityInCart >= product.stock;
+    const showImage = product.imageUrl !== null && !imageFailed;
 
     return (
         <div className="card h-100">
-            <div className="position-relative bg-body-secondary text-center text-secondary py-5 rounded-top">
-                <i className="bi bi-image fs-1"></i>
+            <div
+                className="position-relative bg-body-secondary text-secondary rounded-top overflow-hidden d-flex align-items-center justify-content-center"
+                style={{height: '160px'}}
+            >
+                {showImage ? (
+                    <img
+                        src={product.imageUrl ?? undefined}
+                        alt={product.name}
+                        className="w-100 h-100 object-fit-cover"
+                        loading="lazy"
+                        onError={() => setImageFailed(true)}
+                    />
+                ) : (
+                    <i className="bi bi-image fs-1"></i>
+                )}
                 <span
                     className={`badge position-absolute top-0 end-0 m-2 ${product.stock === 0 ? 'bg-danger' : 'bg-secondary'}`}
                 >

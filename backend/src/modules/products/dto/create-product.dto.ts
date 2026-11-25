@@ -1,4 +1,4 @@
-import {IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min} from 'class-validator';
+import {IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, MaxLength, Min} from 'class-validator';
 import {ICreateProductDto} from "@pos/shared";
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
@@ -22,6 +22,12 @@ export class CreateProductDto implements ICreateProductDto {
     @IsString()
     @IsOptional()
     description?: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsUrl({}, {message: 'La imagen debe ser una URL válida'})
+    @MaxLength(500)
+    imageUrl?: string | null;
 
     @ApiProperty()
     @IsString()

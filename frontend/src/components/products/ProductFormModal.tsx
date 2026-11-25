@@ -14,6 +14,7 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
     const [sku, setSku] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
     const [category, setCategory] = useState('');
     const [purchasePrice, setPurchasePrice] = useState('');
     const [salePrice, setSalePrice] = useState('');
@@ -29,6 +30,7 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
             setSku(productToEdit.sku);
             setName(productToEdit.name);
             setDescription(productToEdit.description ?? '');
+            setImageUrl(productToEdit.imageUrl ?? '');
             setCategory(productToEdit.category);
             setPurchasePrice(String(productToEdit.purchasePrice));
             setSalePrice(String(productToEdit.salePrice));
@@ -38,6 +40,7 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
             setSku('');
             setName('');
             setDescription('');
+            setImageUrl('');
             setCategory('');
             setPurchasePrice('');
             setSalePrice('');
@@ -60,6 +63,7 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
         const trimmedName = name.trim();
         const trimmedCategory = category.trim();
         const trimmedDescription = description.trim();
+        const trimmedImageUrl = imageUrl.trim();
 
         const parsedPurchase = Number(purchasePrice);
         const parsedSale = Number(salePrice);
@@ -99,6 +103,7 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
             salePrice: parsedSale,
             stock: parsedStock,
             minStock: parsedMinStock,
+            imageUrl: trimmedImageUrl === '' ? null : trimmedImageUrl,
         };
 
         if (trimmedDescription !== '') {
@@ -185,6 +190,19 @@ export function ProductFormModal({show, productToEdit, categories, saving, onClo
                                             placeholder="Opcional"
                                             value={description}
                                             onChange={(event) => setDescription(event.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="col-12">
+                                        <label htmlFor="productImageUrl" className="form-label">URL de la imagen</label>
+                                        <input
+                                            id="productImageUrl"
+                                            type="url"
+                                            className="form-control"
+                                            maxLength={500}
+                                            placeholder="https://... (opcional)"
+                                            value={imageUrl}
+                                            onChange={(event) => setImageUrl(event.target.value)}
                                         />
                                     </div>
 

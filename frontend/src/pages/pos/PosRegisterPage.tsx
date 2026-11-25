@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import type { CreateSaleRequest, IProductDto, PaymentMethod } from '@pos/shared';
+import type { CreateSaleRequest, IProductDto, PaymentMethod, SaleDto } from '@pos/shared';
 import { ProductCard } from '../../components/pos/ProductCard';
 import { CartPanel } from '../../components/pos/CartPanel';
+import { TicketModal } from '../../components/pos/TicketModal';
 import { useCart } from '../../context/CartContext';
 import { getErrorMessage } from '../../services/auth/api';
 import { getProducts } from '../../services/products.service';
@@ -22,6 +23,7 @@ export const PosRegisterPage = () => {
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH');
     const [amountPaid, setAmountPaid] = useState('');
     const [saving, setSaving] = useState(false);
+    const [lastSale, setLastSale] = useState<SaleDto | null>(null);
 
     const loadProducts = () => {
         return getProducts()
@@ -69,6 +71,7 @@ export const PosRegisterPage = () => {
         try {
             const sale = await createSale(request);
             toast.success(`Venta #${sale.id} registrada`);
+            setLastSale(sale);
             clearCart();
             setAmountPaid('');
             await loadProducts();
@@ -142,6 +145,8 @@ export const PosRegisterPage = () => {
                     />
                 </div>
             </div>
+
+            {lastSale && <TicketModal sale={lastSale} onClose={() => setLastSale(null)} />}
         </div>
     );
 };

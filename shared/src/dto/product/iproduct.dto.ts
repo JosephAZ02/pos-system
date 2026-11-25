@@ -3,6 +3,7 @@ export interface IProductDto {
     sku: string;
     name: string;
     description: string | null;
+    imageUrl: string | null;
     category: string;
     purchasePrice: number;
     salePrice: number;

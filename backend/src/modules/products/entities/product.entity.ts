@@ -15,6 +15,9 @@ export class Product {
     @Column({type: 'text', nullable: true})
     description: string | null;
 
+    @Column({type: 'varchar', length: 500, nullable: true})
+    imageUrl: string | null;
+
     @Column({length: 100})
     category: string;
 
