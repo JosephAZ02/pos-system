@@ -51,7 +51,7 @@ export function DashboardPage() {
             setSummary(summaryData);
             setTopProducts(topData);
         } catch (error) {
-            toast.error(getErrorMessage(error, 'No se pudo cargar el panel de control.'));
+            toast.error(getErrorMessage(error, 'No se pudo cargar el dashboard.'));
         } finally {
             setLoading(false);
         }
@@ -74,7 +74,7 @@ export function DashboardPage() {
                 <div>
                     <small className="text-primary">Resumen general</small>
                     <h1 className="h3 mb-0">
-                        Panel de Control{user?.name ? ` — ${user.name}` : ''}
+                        Dashboard{user?.name ? ` (${user.name})` : ''}
                     </h1>
                 </div>
 
@@ -102,7 +102,8 @@ export function DashboardPage() {
             {loading ? (
                 <div className="text-center py-5">
                     <div className="spinner-border text-primary"/>
-                    <div className="mt-2 text-muted">Cargando métricas...</div>
+                    <br></br>
+                    <div className="mt-2 text-muted">Cargando...</div>
                 </div>
             ) : (
                 <>
@@ -127,7 +128,7 @@ export function DashboardPage() {
                         <MetricCard
                             label="Stock bajo"
                             value={lowStockProducts}
-                            subtitle={lowStockProducts > 0 ? 'Requieren reposición' : 'Inventario saludable'}
+                            subtitle={lowStockProducts > 0 ? 'Se necesitan reposiciones' : 'Inventario bien'}
                             valueClassName={lowStockProducts > 0 ? 'text-warning' : ''}
                         />
                     </div>
@@ -147,7 +148,7 @@ export function DashboardPage() {
                             {topProducts.length === 0 ? (
                                 <div className="text-center text-muted py-5">
                                     <i className="bi bi-trophy fs-3 d-block mb-2"/>
-                                    <p className="mb-0">Aún no hay ventas registradas para mostrar el ranking.</p>
+                                    <p className="mb-0">Aún no hay ventas registradas para mostrar.</p>
                                 </div>
                             ) : (
                                 <div className="table-responsive">

@@ -17,7 +17,7 @@ function SideBar() {
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>
                     <i className="bi bi-speedometer2"></i>
-                    Panel de Control
+                    Dashboard
                 </NavLink>
 
                 <NavLink to="/products" className={({ isActive }) =>

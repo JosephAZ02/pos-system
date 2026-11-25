@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from './pages/auth/login-page';
 import { ProtectedRoute } from './components/auth/protected-route';
-import { DashboardPage } from './pages/other/dashboard-page';
+import { DashboardPage } from './pages/dashboard/dashboard-page';
 import AppLayout from './components/templates/app-layout';
 import { ProductsPage } from './pages/products/products-page';
 import { PosRegisterPage } from './pages/pos/PosRegisterPage';
