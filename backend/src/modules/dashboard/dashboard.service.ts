@@ -1,10 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { Sale } from '../sales/entities/sale.entity';
 import { SaleItem } from '../sales/entities/sale-item.entity';
 import { DashboardFilterDto } from './dto/dashboard-filter.dto';
+
+function parseStartDate(value: string): Date {
+  if (value.length === 10) {
+    return new Date(`${value}T00:00:00.000Z`);
+  }
+  return new Date(value);
+}
+
+function parseEndDate(value: string): Date {
+  if (value.length === 10) {
+    return new Date(`${value}T23:59:59.999Z`);
+  }
+  return new Date(value);
+}
 
 @Injectable()
 export class DashboardService {
@@ -17,41 +31,51 @@ export class DashboardService {
     private readonly saleItemRepository: Repository<SaleItem>,
   ) {}
 
-  async getSummary(filterDto: DashboardFilterDto) {
-    const { startDate, endDate } = filterDto;
-
-    const now = new Date();
-    const start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth(), 1);
-    const end = endDate ? new Date(endDate) : new Date();
-
-    // 1. Resumen de Ventas
-    const salesCount = await this.saleRepository.count({
+  private async getSalesMetrics(start: Date, end: Date) {
+    const totalOrders = await this.saleRepository.count({
       where: { createdAt: Between(start, end) },
     });
 
-    const salesTotalResult = await this.saleRepository
+    const totalResult = await this.saleRepository
       .createQueryBuilder('sale')
       .select('SUM(sale.total)', 'totalRevenue')
       .where('sale.createdAt BETWEEN :start AND :end', { start, end })
       .getRawOne();
 
-    // 2. Resumen de Productos (usando minStock e isActive)
-    const totalProducts = await this.productRepository.count({
-      where: { isActive: true },
-    });
+    return {
+      totalOrders,
+      totalRevenue: parseFloat(totalResult?.totalRevenue || '0'),
+    };
+  }
 
-    const lowStockProducts = await this.productRepository
-      .createQueryBuilder('product')
-      .where('product.stock <= product.minStock')
-      .andWhere('product.isActive = :isActive', { isActive: true })
-      .getCount();
+  async getSummary(filterDto: DashboardFilterDto) {
+    const { startDate, endDate } = filterDto;
+    const now = new Date();
+
+    const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
+    const endOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
+
+    const start = startDate ? parseStartDate(startDate) : startOfMonth;
+    const end = endDate ? parseEndDate(endDate) : endOfToday;
+
+    const [periodSales, todaySales, monthSales, totalProducts, lowStockProducts] = await Promise.all([
+      this.getSalesMetrics(start, end),
+      this.getSalesMetrics(startOfToday, endOfToday),
+      this.getSalesMetrics(startOfMonth, endOfToday),
+      this.productRepository.count({ where: { isActive: true } }),
+      this.productRepository
+        .createQueryBuilder('product')
+        .where('product.stock <= product.minStock')
+        .andWhere('product.isActive = :isActive', { isActive: true })
+        .getCount(),
+    ]);
 
     return {
       period: { start, end },
-      sales: {
-        totalOrders: salesCount,
-        totalRevenue: parseFloat(salesTotalResult?.totalRevenue || '0'),
-      },
+      sales: periodSales,
+      today: todaySales,
+      month: monthSales,
       products: {
         totalProducts,
         lowStockProducts,
@@ -74,10 +98,16 @@ export class DashboardService {
       .orderBy('SUM(item.quantity)', 'DESC')
       .limit(limit);
 
-    if (filterDto?.startDate && filterDto?.endDate) {
-      const start = new Date(filterDto.startDate);
-      const end = new Date(filterDto.endDate);
-      query.where('sale.createdAt BETWEEN :start AND :end', { start, end });
+    if (filterDto?.startDate) {
+      query.andWhere('sale.createdAt >= :start', {
+        start: parseStartDate(filterDto.startDate),
+      });
+    }
+
+    if (filterDto?.endDate) {
+      query.andWhere('sale.createdAt <= :end', {
+        end: parseEndDate(filterDto.endDate),
+      });
     }
 
     const rawData = await query.getRawMany();
