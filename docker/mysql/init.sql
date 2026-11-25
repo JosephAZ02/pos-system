@@ -1,13 +1,9 @@
 
-CREATE
-DATABASE IF NOT EXISTS `pos-system` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE
-`pos-system`;
+CREATE DATABASE IF NOT EXISTS `pos-system` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `pos-system`;
 
-GRANT ALL PRIVILEGES ON *.* TO
-'admin'@'%' WITH GRANT OPTION;
-FLUSH
-PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS `roles`
 (
@@ -211,7 +207,8 @@ VALUES ('products', 'create', 'products.create', 'Crear productos'),
        ('sales', 'create', 'sales.create', 'Registrar ventas'),
        ('sales', 'read', 'sales.read', 'Ver ventas'),
        ('users', 'manage', 'users.manage', 'Gestionar usuarios'),
-       ('reports', 'read', 'reports.read', 'Ver reportes');
+       ('reports', 'read', 'reports.read', 'Ver reportes'),
+       ('dashboard', 'read', 'dashboard.read', 'Ver dashboard');
 
 INSERT INTO roles (name, description)
 VALUES ('admin', 'Acceso total'),
@@ -230,6 +227,20 @@ FROM roles r,
 WHERE r.name = 'cashier'
   AND p.name IN ('products.read', 'sales.create', 'sales.read');
 
+-- Usuarios de prueba iniciales (se crean al inicializar el volumen de MySQL por primera vez):
+--   admin@pos.com     / admin123    (admin, activo)
+--   admin2@pos.com    / admin123    (admin, activo)
+--   cajero@pos.com    / cajero123   (cashier, activo)
+--   cajero2@pos.com   / cajero123   (cashier, activo)
+--   inactivo@pos.com  / inactivo123 (cashier, inactivo)
 INSERT INTO users (name, email, password, isActive, roleId)
 VALUES ('Administrador', 'admin@pos.com', '$2a$12$7rtvE76wvAnd55w7/V2LKuvfFkpJbAjjRaQYOcc2JhMneheVQ9012', 1,
-        (SELECT id FROM roles WHERE name = 'admin'));
+        (SELECT id FROM roles WHERE name = 'admin')),
+       ('Admin Secundario', 'admin2@pos.com', '$2b$10$bskvhMqFfaJuMbQU6ZGVV.DJXMZKz.CwDe0It4KN5Ngbuufs.063e', 1,
+        (SELECT id FROM roles WHERE name = 'admin')),
+       ('Cajero Principal', 'cajero@pos.com', '$2b$10$KTLUDvITumfPmcirVnWoQ.JsiJTYQUQPiNRBDqIEIWnUlNBmImJdq', 1,
+        (SELECT id FROM roles WHERE name = 'cashier')),
+       ('Cajero Turno Tarde', 'cajero2@pos.com', '$2b$10$KTLUDvITumfPmcirVnWoQ.JsiJTYQUQPiNRBDqIEIWnUlNBmImJdq', 1,
+        (SELECT id FROM roles WHERE name = 'cashier')),
+       ('Usuario Inactivo', 'inactivo@pos.com', '$2b$10$iMRvmrfbj66JK8UU76gnRO46erArgchi8qNB4SAETfVcR/BPfZgry', 0,
+        (SELECT id FROM roles WHERE name = 'cashier'));

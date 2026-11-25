@@ -13,8 +13,6 @@ function SideBar() {
             </div>
 
             <div className="sidebar-menu">
-
-
                 <NavLink to="/dashboard" className={({ isActive }) =>
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>

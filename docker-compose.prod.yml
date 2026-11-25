@@ -1,0 +1,67 @@
+services:
+  pos-mysql:
+    image: mysql:8.4.13
+    container_name: pos-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-pos-system}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Falta DB_ROOT_PASSWORD en .env}
+      MYSQL_USER: ${DB_ADMIN_USER:-admin}
+      MYSQL_PASSWORD: ${DB_ADMIN_PASSWORD:?Falta DB_ADMIN_PASSWORD en .env}
+    volumes:
+      - pos_mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
+    networks:
+      - pos_internal
+
+  pos-backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.prod
+    container_name: pos-backend
+    restart: unless-stopped
+    depends_on:
+      pos-mysql:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DB_HOST: pos-mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${DB_ROOT_PASSWORD:?Falta DB_ROOT_PASSWORD en .env}
+      DB_NAME: ${DB_NAME:-pos-system}
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
+      JWT_SECRET: ${JWT_SECRET:?Falta JWT_SECRET en .env}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+    networks:
+      - pos_internal
+      - caddy_net
+
+  pos-frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://pos-service.cristian2259.net/api}
+    container_name: pos-frontend
+    restart: unless-stopped
+    depends_on:
+      - pos-backend
+    networks:
+      - caddy_net
+
+volumes:
+  pos_mysql_data:
+
+networks:
+  pos_internal:
+    driver: bridge
+  caddy_net:
+    external: true
+    name: infra_feria_internal

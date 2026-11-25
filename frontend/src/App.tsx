@@ -26,8 +26,10 @@ export default function App() {
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="/users-roles" element={<UsersRolesPage />} />
                     </Route>
-
                 </Route>
+
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
         </BrowserRouter>
     );

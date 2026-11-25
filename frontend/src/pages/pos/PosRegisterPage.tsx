@@ -86,7 +86,7 @@ export const PosRegisterPage = () => {
                 <h2 className="mb-3">Nueva venta</h2>
 
                 <div className="input-group mb-3">
-                    <span className="input-group-text bg-white">
+                    <span className="input-group-text bg-body-tertiary">
                         <i className="bi bi-search"></i>
                     </span>
                     <input

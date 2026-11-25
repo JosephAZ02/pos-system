@@ -1,0 +1,94 @@
+:root,
+[data-bs-theme="dark"] {
+    --bs-border-radius: 0.75rem;
+    --bs-border-radius-sm: 0.55rem;
+    --bs-border-radius-lg: 1rem;
+    --bs-border-radius-xl: 1.25rem;
+    --bs-border-radius-xxl: 1.5rem;
+
+    --bs-body-bg: #111318;
+    --bs-body-bg-rgb: 17, 19, 24;
+    --bs-body-color: #e6ebf5;
+    --bs-body-color-rgb: 230, 235, 245;
+
+    --bs-secondary-bg: #232834;
+    --bs-secondary-bg-rgb: 35, 40, 52;
+    --bs-tertiary-bg: #1b1f27;
+    --bs-tertiary-bg-rgb: 27, 31, 39;
+
+    --bs-border-color: rgba(255, 255, 255, 0.09);
+}
+
+.btn {
+    --bs-btn-border-radius: 999px;
+    --bs-btn-font-weight: 500;
+    --bs-btn-padding-x: 1.15rem;
+    transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.08s ease;
+}
+
+.btn-sm {
+    --bs-btn-border-radius: 999px;
+    --bs-btn-padding-x: 0.85rem;
+}
+
+.btn-lg {
+    --bs-btn-border-radius: 999px;
+    --bs-btn-padding-x: 1.4rem;
+}
+
+.btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.card {
+    --bs-card-bg: #1b1f27;
+    --bs-card-border-radius: 1.25rem;
+    --bs-card-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-header:first-child {
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+}
+
+.modal-content {
+    --bs-modal-bg: #1b1f27;
+    --bs-modal-border-radius: 1.5rem;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.shadow-sm {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.badge {
+    --bs-badge-border-radius: 999px;
+    --bs-badge-padding-x: 0.7em;
+    --bs-badge-padding-y: 0.42em;
+    font-weight: 500;
+}
+
+.nav-pills {
+    --bs-nav-pills-border-radius: 999px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(22, 145, 194, 0.22);
+    border-color: #1691c2;
+}
+
+.table {
+    --bs-table-bg: #1b1f27;
+    --bs-table-hover-bg: #232938;
+    --bs-table-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table-dark {
+    --bs-table-bg: #232834;
+    --bs-table-color: #cbd5e1;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.8rem 0.9rem;
+}

@@ -244,7 +244,7 @@ export const ReportsPage = () => {
                         <div className="col-12 col-md-6 d-flex flex-wrap gap-2">
                             <button
                                 type="button"
-                                className="btn btn-sm btn-light border"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => applyPresetRange('today')}
                                 disabled={activeTab === 'inventory'}
                             >
@@ -252,7 +252,7 @@ export const ReportsPage = () => {
                             </button>
                             <button
                                 type="button"
-                                className="btn btn-sm btn-light border"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => applyPresetRange('week')}
                                 disabled={activeTab === 'inventory'}
                             >
@@ -260,7 +260,7 @@ export const ReportsPage = () => {
                             </button>
                             <button
                                 type="button"
-                                className="btn btn-sm btn-light border"
+                                className="btn btn-sm btn-outline-secondary"
                                 onClick={() => applyPresetRange('month')}
                                 disabled={activeTab === 'inventory'}
                             >
@@ -277,7 +277,7 @@ export const ReportsPage = () => {
                     <button
                         type="button"
                         className={`nav-link d-flex align-items-center gap-2 ${
-                            activeTab === 'sales' ? 'active' : 'bg-white border text-dark'
+                            activeTab === 'sales' ? 'active' : 'bg-body-tertiary border text-body'
                         }`}
                         onClick={() => setActiveTab('sales')}
                     >
@@ -289,7 +289,7 @@ export const ReportsPage = () => {
                     <button
                         type="button"
                         className={`nav-link d-flex align-items-center gap-2 ${
-                            activeTab === 'inventory' ? 'active' : 'bg-white border text-dark'
+                            activeTab === 'inventory' ? 'active' : 'bg-body-tertiary border text-body'
                         }`}
                         onClick={() => setActiveTab('inventory')}
                     >
@@ -301,7 +301,7 @@ export const ReportsPage = () => {
                     <button
                         type="button"
                         className={`nav-link d-flex align-items-center gap-2 ${
-                            activeTab === 'top-products' ? 'active' : 'bg-white border text-dark'
+                            activeTab === 'top-products' ? 'active' : 'bg-body-tertiary border text-body'
                         }`}
                         onClick={() => setActiveTab('top-products')}
                     >
@@ -417,7 +417,7 @@ export const ReportsPage = () => {
 
             {/* Tabla principal */}
             <div className="card border-0 shadow-sm">
-                <div className="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div className="card-header bg-transparent py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h2 className="h6 mb-0 fw-bold">
                         {activeTab === 'sales' && 'Detalle de ventas'}
                         {activeTab === 'inventory' && 'Estado de inventario'}
@@ -449,7 +449,7 @@ export const ReportsPage = () => {
                     ) : activeTab === 'sales' ? (
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
-                                <thead className="table-light">
+                                <thead className="table-dark">
                                     <tr>
                                         <th># Venta</th>
                                         <th>Fecha</th>
@@ -484,7 +484,7 @@ export const ReportsPage = () => {
                     ) : activeTab === 'inventory' ? (
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
-                                <thead className="table-light">
+                                <thead className="table-dark">
                                     <tr>
                                         <th>Código</th>
                                         <th>Producto</th>
@@ -545,7 +545,7 @@ export const ReportsPage = () => {
                     ) : (
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
-                                <thead className="table-light">
+                                <thead className="table-dark">
                                     <tr>
                                         <th>#</th>
                                         <th>Código</th>

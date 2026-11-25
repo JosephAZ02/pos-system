@@ -1,5 +1,5 @@
-import type { IProductDto } from '@pos/shared';
-import { formatColones } from '../../utils/formatters';
+import type {IProductDto} from '@pos/shared';
+import {formatColones} from '../../utils/formatters';
 
 interface ProductCardProps {
     product: IProductDto;
@@ -7,12 +7,12 @@ interface ProductCardProps {
     onAdd: (product: IProductDto) => void;
 }
 
-export const ProductCard = ({ product, quantityInCart, onAdd }: ProductCardProps) => {
+export const ProductCard = ({product, quantityInCart, onAdd}: ProductCardProps) => {
     const noStockLeft = quantityInCart >= product.stock;
 
     return (
         <div className="card h-100">
-            <div className="position-relative bg-light text-center text-secondary py-5 rounded-top">
+            <div className="position-relative bg-body-secondary text-center text-secondary py-5 rounded-top">
                 <i className="bi bi-image fs-1"></i>
                 <span
                     className={`badge position-absolute top-0 end-0 m-2 ${product.stock === 0 ? 'bg-danger' : 'bg-secondary'}`}

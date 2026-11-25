@@ -1,6 +1,6 @@
-import {IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min} from 'class-validator';
-import {ICreateProductDto} from "@pos/shared/src/dto/product/icreateproduct.dto";
-import {ApiProperty} from "@nestjs/swagger";
+import {IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min} from 'class-validator';
+import {ICreateProductDto} from "@pos/shared";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
 
 export class CreateProductDto implements ICreateProductDto {
@@ -18,6 +18,7 @@ export class CreateProductDto implements ICreateProductDto {
     name: string;
 
     @ApiProperty()
+    @ApiPropertyOptional()
     @IsString()
     @IsOptional()
     description?: string;
@@ -25,6 +26,7 @@ export class CreateProductDto implements ICreateProductDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty({message: 'La categoría no puede estar vacia'})
+    @MaxLength(100)
     category: string;
 
     @ApiProperty()
@@ -38,7 +40,7 @@ export class CreateProductDto implements ICreateProductDto {
     salePrice: number;
 
     @ApiProperty()
-    @IsNumber({}, {message: 'El stock debe ser un número entero'})
+    @IsInt({message: 'El stock debe ser un número entero'})
     @Min(0)
     stock: number;
 

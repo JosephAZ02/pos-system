@@ -1,3 +1,3 @@
-import {ICreateProductDto} from "./icreateproduct.dto";
+import type {ICreateProductDto} from "./icreateproduct.dto";
 
 export type IUpdateProductDto = Partial<ICreateProductDto>;

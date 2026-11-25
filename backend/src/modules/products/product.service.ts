@@ -61,7 +61,6 @@ export class ProductService {
 
     async getAll(): Promise<Product[]> {
         return await this.productRepo.find({
-            where: {isActive: true},
             order: {name: 'ASC'},
         });
     }

@@ -1,6 +1,6 @@
-import type { PaymentMethod } from '@pos/shared';
-import { useCart } from '../../context/CartContext';
-import { formatColones } from '../../utils/formatters';
+import type {PaymentMethod} from '@pos/shared';
+import {useCart} from '../../context/CartContext';
+import {formatColones} from '../../utils/formatters';
 
 interface CartPanelProps {
     paymentMethod: PaymentMethod;
@@ -12,20 +12,20 @@ interface CartPanelProps {
 }
 
 const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
-    { value: 'CASH', label: 'Efectivo' },
-    { value: 'CARD', label: 'Tarjeta' },
-    { value: 'TRANSFER', label: 'SINPE' },
+    {value: 'CASH', label: 'Efectivo'},
+    {value: 'CARD', label: 'Tarjeta'},
+    {value: 'TRANSFER', label: 'SINPE'},
 ];
 
 export const CartPanel = ({
-    paymentMethod,
-    amountPaid,
-    saving,
-    onPaymentMethodChange,
-    onAmountPaidChange,
-    onComplete,
-}: CartPanelProps) => {
-    const { items, itemCount, subtotal, tax, total, changeQuantity, removeItem, clearCart } = useCart();
+                              paymentMethod,
+                              amountPaid,
+                              saving,
+                              onPaymentMethodChange,
+                              onAmountPaidChange,
+                              onComplete,
+                          }: CartPanelProps) => {
+    const {items, itemCount, subtotal, tax, total, changeQuantity, removeItem, clearCart} = useCart();
 
     const isCash = paymentMethod === 'CASH';
     const received = Number(amountPaid) || 0;
@@ -80,7 +80,7 @@ export const CartPanel = ({
                                     >
                                         <i className="bi bi-dash"></i>
                                     </button>
-                                    <span className="btn btn-outline-secondary disabled text-dark">
+                                    <span className="btn btn-outline-secondary disabled text-body">
                                         {item.quantity}
                                     </span>
                                     <button
@@ -106,7 +106,7 @@ export const CartPanel = ({
                     <span>IVA 13%</span>
                     <span>{formatColones(tax)}</span>
                 </div>
-                <hr className="my-2" />
+                <hr className="my-2"/>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <span>Total</span>
                     <span className="fs-4 fw-bold">{formatColones(total)}</span>
@@ -147,7 +147,7 @@ export const CartPanel = ({
                         </div>
                         <div className="col-5">
                             <label className="form-label fw-semibold small">Vuelto</label>
-                            <div className="form-control bg-light fw-bold">{formatColones(change)}</div>
+                            <div className="form-control bg-body-secondary fw-bold">{formatColones(change)}</div>
                         </div>
                     </div>
                 )}
