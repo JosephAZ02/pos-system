@@ -42,7 +42,7 @@ function SideBar() {
                     Reportes
                 </NavLink>
 
-                {user?.permissions?.includes('user.manage') && (<NavLink to="/users-roles" className={({ isActive }) =>
+                {user?.permissions?.includes('users.manage') && (<NavLink to="/users-roles" className={({ isActive }) =>
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>
                     <i className="bi bi-person"></i>
