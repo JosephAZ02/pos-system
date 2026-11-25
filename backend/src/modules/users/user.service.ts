@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -48,6 +48,10 @@ export class UsersService {
     async update(id: number, dto: UpdateUserDto) {
         const user = await this.findOne(id);
 
+
+        if (id === 1 && dto.roleId && dto.roleId !== 1) {
+            throw new ForbiddenException('No se puede cambiar el rol del administrador principal');
+        }
         // Si se está actualizando la contraseña, se encripta de nuevo
         if (dto.password) {
             dto.password = await bcrypt.hash(dto.password, 10);
@@ -64,8 +68,13 @@ export class UsersService {
     }
 
     async remove(id: number) {
+        if (id === 1) {
+            throw new ForbiddenException('No se puede eliminar al administrador principal del sistema');
+
+        }
         const user = await this.findOne(id);
         await this.userRepo.remove(user);
         return { message: 'Usuario eliminado' };
+
     }
 }

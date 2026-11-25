@@ -1,22 +1,31 @@
 import Swal from "sweetalert2";
 
 // muestra el error que manda el backend (texto plano) o un mensaje de respaldo
-export function showError(err: any, fallback: string) {
-  let message = fallback;
+export const showError = (error: any, defaultMessage: string = 'Ocurrió un error') => {
+  // 1. Intentamos sacar el mensaje del backend
+  let message = error?.response?.data?.message;
 
-  if (err.response?.status === 403) {
-    message = "No se pudo realizar la acción solicitada";
-  } else if (typeof err.response?.data === "string" && err.response.data !== "") {
-    message = err.response.data;
+  // Si el backend mandó un objeto con statusCode y message (típico de NestJS)
+  if (!message && error?.response?.data?.error) {
+    message = error.response.data.error;
+  }
+
+  // 2. Si el backend mandó un arreglo (por el ValidationPipe)
+  if (Array.isArray(message)) {
+    message = message.join('\n');
+  }
+
+  // 3. Si después de todo no hay mensaje, usamos el quemado
+  if (!message) {
+    message = defaultMessage;
   }
 
   Swal.fire({
-    icon: "error",
-    title: "No se pudo completar",
+    icon: 'error',
+    title: 'Error',
     text: message,
-    confirmButtonText: "Aceptar",
   });
-}
+};
 
 export function showSuccess(title: string, text: string) {
   Swal.fire({

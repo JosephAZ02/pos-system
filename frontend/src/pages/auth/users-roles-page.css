@@ -1,0 +1,32 @@
+
+.bg-pos {
+    background-color: #1691c2 !important;
+}
+
+.text-pos {
+    color: #1691c2 !important;
+}
+
+.btn-pos {
+    background-color: #1691c2 !important;
+    color: white !important;
+    border-color: #1691c2 !important;
+}
+
+.btn-pos:hover {
+    background-color: #117aa3 !important;
+}
+
+.border-pos {
+    border-color: #1691c2 !important;
+}
+
+.form-check-input:checked {
+    background-color: #1691c2;
+    border-color: #1691c2;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom: 2px solid #1691c2;
+    background-color: transparent;
+}

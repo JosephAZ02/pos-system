@@ -1,22 +1,30 @@
-import {NestFactory} from '@nestjs/core';
-import {AppModule} from './app.module';
-import {ValidationPipe} from '@nestjs/common';
-import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
 
     const app = await NestFactory.create(AppModule);
 
     app.enableCors();
-    
+
     app.setGlobalPrefix('api');
 
     app.useGlobalPipes(
         new ValidationPipe({
-
             whitelist: true,
             forbidNonWhitelisted: true,
             transform: true,
+            exceptionFactory: (errors) => {
+                // Extrae todos los mensajes de error de los DTOs
+                const messages = errors.map((error) => {
+                    return Object.values(error.constraints || {}).join(', ');
+                });
+
+                // Lanza un BadRequest con la lista de mensajes
+                return new BadRequestException(messages);
+            },
         }),
     );
 

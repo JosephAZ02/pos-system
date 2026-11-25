@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -74,12 +74,27 @@ export class RolesService {
 
 
     async assignPermissions(id: number, dto: AssignPermissionsDto) {
-        const role = await this.findOne(id); // Valida que exista
+        const role = await this.findOne(id);
 
-        // Borramos los permisos anteriores del rol
+
+        if (role.name.toLowerCase() === 'admin') {
+
+            const currentPermissionIds = role.rolePermissions.map(rp => rp.permissionId);
+
+
+            const isTryingToRemove = currentPermissionIds.some(
+                (permId) => !dto.permissionIds.includes(permId)
+            );
+
+            if (isTryingToRemove) {
+                throw new BadRequestException(
+                    'No puedes quitarle permisos al rol Administrador, solo puedes agregar nuevos.'
+                );
+            }
+        }
+
         await this.rolePermRepo.delete({ roleId: id });
 
-        // Insertamos los nuevos
         if (dto.permissionIds.length > 0) {
             const newRolePerms = dto.permissionIds.map((permId) =>
                 this.rolePermRepo.create({ roleId: id, permissionId: permId }),
@@ -87,6 +102,6 @@ export class RolesService {
             await this.rolePermRepo.save(newRolePerms);
         }
 
-        return this.findOne(id); // Retorna el rol ya actualizado
+        return this.findOne(id);
     }
 }
