@@ -1,10 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { Sale } from '../sales/entities/sale.entity';
 import { SaleItem } from '../sales/entities/sale-item.entity';
 import { ReportFilterDto } from './dto/report-filter.dto';
+
+function parseStartDate(value: string): Date {
+  if (value.length === 10) {
+    return new Date(`${value}T00:00:00.000Z`);
+  }
+  return new Date(value);
+}
+
+function parseEndDate(value: string): Date {
+  if (value.length === 10) {
+    return new Date(`${value}T23:59:59.999Z`);
+  }
+  return new Date(value);
+}
 
 @Injectable()
 export class ReportsService {
@@ -22,8 +36,11 @@ export class ReportsService {
     const { startDate, endDate } = filterDto;
 
     const now = new Date();
-    const start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth(), 1);
-    const end = endDate ? new Date(endDate) : new Date();
+    const defaultStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
+    const defaultEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));
+
+    const start = startDate ? parseStartDate(startDate) : defaultStart;
+    const end = endDate ? parseEndDate(endDate) : defaultEnd;
 
     const sales = await this.saleRepository.find({
       where: { createdAt: Between(start, end) },
@@ -56,7 +73,7 @@ export class ReportsService {
 
     const totalProducts = products.length;
     const lowStockCount = products.filter((p) => p.stock <= p.minStock).length;
-    
+
     const totalInventoryCostValue = products.reduce(
       (acc, p) => acc + Number(p.purchasePrice || 0) * Number(p.stock || 0),
       0,
@@ -95,10 +112,12 @@ export class ReportsService {
       .addGroupBy('item.productName')
       .orderBy('SUM(item.quantity)', 'DESC');
 
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      query.where('sale.createdAt BETWEEN :start AND :end', { start, end });
+    if (startDate) {
+      query.andWhere('sale.createdAt >= :start', { start: parseStartDate(startDate) });
+    }
+
+    if (endDate) {
+      query.andWhere('sale.createdAt <= :end', { end: parseEndDate(endDate) });
     }
 
     const rawData = await query.getRawMany();

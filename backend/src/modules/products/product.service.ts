@@ -51,6 +51,15 @@ export class ProductService {
         return {message: `Producto ${product.name} deshabilitado`};
     }
 
+    async reactivate(id: number): Promise<Product> {
+        const product = await this.productRepo.findOneBy({id});
+        if (!product) {
+            throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+        }
+        product.isActive = true;
+        return await this.productRepo.save(product);
+    }
+
     async getById(id: number): Promise<Product> {
         const product = await this.productRepo.findOneBy({id, isActive: true});
         if (!product) {

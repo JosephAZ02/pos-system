@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import toast from 'react-hot-toast';
+import {getErrorMessage} from '../../services/auth/api';
 import {
     getInventoryReport,
     getSalesReport,
@@ -10,6 +11,12 @@ import {
 } from '../../services/reports.service';
 
 type ReportTab = 'sales' | 'inventory' | 'top-products';
+
+const PAYMENT_LABELS: Record<string, string> = {
+    CASH: 'Efectivo',
+    CARD: 'Tarjeta',
+    TRANSFER: 'SINPE',
+};
 
 const formatCurrency = (amount: number): string => {
     const value = Number.isFinite(Number(amount)) ? Number(amount) : 0;
@@ -78,10 +85,7 @@ export const ReportsPage = () => {
             setTopProducts(Array.isArray(topRes) ? topRes : []);
         } catch (error: unknown) {
             console.error('Error al cargar reportes:', error);
-            const message =
-                (error as { response?: { data?: { message?: string } } })?.response?.data
-                    ?.message || 'No se pudieron cargar los reportes.';
-            toast.error(message);
+            toast.error(getErrorMessage(error, 'No se pudieron cargar los reportes.'));
         } finally {
             setLoading(false);
         }
@@ -116,24 +120,25 @@ export const ReportsPage = () => {
 
     const handleExportCsv = () => {
         let rows: string[][] = [];
-        let filename = `reporte-${activeTab}.csv`;
+        const filename = `reporte-${activeTab}.csv`;
 
         if (activeTab === 'sales') {
             rows = [
-                ['ID', 'Fecha', 'Cajero', 'Articulos', 'Total (CRC)'],
+                ['ID', 'Fecha', 'Cajero', 'Metodo de Pago', 'Articulos', 'Total (CRC)'],
                 ...(salesReport?.data ?? []).map((sale) => [
                     String(sale.id),
                     formatDateTime(sale.createdAt),
                     sale.user?.name || sale.user?.email || 'No asignado',
+                    PAYMENT_LABELS[sale.paymentMethod ?? ''] || sale.paymentMethod || '—',
                     String(sale.items?.length ?? 0),
                     String(sale.total ?? 0),
                 ]),
             ];
         } else if (activeTab === 'inventory') {
             rows = [
-                ['Codigo', 'Producto', 'Stock', 'Stock Minimo', 'Costo Unit.', 'Precio Venta'],
+                ['SKU', 'Producto', 'Stock', 'Stock Minimo', 'Costo Unit.', 'Precio Venta'],
                 ...filteredInventory.map((prod) => [
-                    prod.code || String(prod.id),
+                    prod.sku || prod.code || String(prod.id),
                     prod.name,
                     String(prod.stock),
                     String(prod.minStock),
@@ -154,7 +159,7 @@ export const ReportsPage = () => {
         }
 
         if (rows.length <= 1) {
-            toast('No hay datos para exportar.', { icon: 'ℹ️' });
+            toast('No hay datos para exportar.', {icon: 'ℹ️'});
             return;
         }
 
@@ -194,7 +199,7 @@ export const ReportsPage = () => {
                         onClick={loadReports}
                         disabled={loading}
                     >
-                        <i className="bi bi-arrow-clockwise" />
+                        <i className="bi bi-arrow-clockwise"/>
                         <span>Actualizar</span>
                     </button>
                     <button
@@ -203,7 +208,7 @@ export const ReportsPage = () => {
                         onClick={handleExportCsv}
                         disabled={loading}
                     >
-                        <i className="bi bi-filetype-csv" />
+                        <i className="bi bi-filetype-csv"/>
                         <span>Exportar CSV</span>
                     </button>
                 </div>
@@ -281,7 +286,7 @@ export const ReportsPage = () => {
                         }`}
                         onClick={() => setActiveTab('sales')}
                     >
-                        <i className="bi bi-receipt" />
+                        <i className="bi bi-receipt"/>
                         <span>Ventas</span>
                     </button>
                 </li>
@@ -293,7 +298,7 @@ export const ReportsPage = () => {
                         }`}
                         onClick={() => setActiveTab('inventory')}
                     >
-                        <i className="bi bi-box-seam" />
+                        <i className="bi bi-box-seam"/>
                         <span>Inventario</span>
                     </button>
                 </li>
@@ -305,7 +310,7 @@ export const ReportsPage = () => {
                         }`}
                         onClick={() => setActiveTab('top-products')}
                     >
-                        <i className="bi bi-trophy" />
+                        <i className="bi bi-trophy"/>
                         <span>Productos más vendidos</span>
                     </button>
                 </li>
@@ -417,7 +422,8 @@ export const ReportsPage = () => {
 
             {/* Tabla principal */}
             <div className="card border-0 shadow-sm">
-                <div className="card-header bg-transparent py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div
+                    className="card-header bg-transparent py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h2 className="h6 mb-0 fw-bold">
                         {activeTab === 'sales' && 'Detalle de ventas'}
                         {activeTab === 'inventory' && 'Estado de inventario'}
@@ -443,41 +449,45 @@ export const ReportsPage = () => {
                 <div className="card-body p-0">
                     {loading ? (
                         <div className="text-center py-5">
-                            <div className="spinner-border text-primary" role="status" />
+                            <div className="spinner-border text-primary" role="status"/>
                             <p className="text-muted small mt-2 mb-0">Cargando información...</p>
                         </div>
                     ) : activeTab === 'sales' ? (
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
                                 <thead className="table-dark">
-                                    <tr>
-                                        <th># Venta</th>
-                                        <th>Fecha</th>
-                                        <th>Usuario</th>
-                                        <th className="text-center">Ítems</th>
-                                        <th className="text-end">Total</th>
-                                    </tr>
+                                <tr>
+                                    <th># Venta</th>
+                                    <th>Fecha</th>
+                                    <th>Usuario</th>
+                                    <th>Método de pago</th>
+                                    <th className="text-center">Ítems</th>
+                                    <th className="text-end">Total</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {(salesReport?.data ?? []).length === 0 ? (
-                                        <tr>
-                                            <td colSpan={5} className="text-center py-4 text-muted">
-                                                No se registraron ventas en el rango seleccionado.
+                                {(salesReport?.data ?? []).length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="text-center py-4 text-muted">
+                                            No se registraron ventas en el rango seleccionado.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    salesReport!.data.map((sale) => (
+                                        <tr key={sale.id}>
+                                            <td className="fw-semibold">#{sale.id}</td>
+                                            <td>{formatDateTime(sale.createdAt)}</td>
+                                            <td>{sale.user?.name || sale.user?.email || '—'}</td>
+                                            <td>
+                                                {PAYMENT_LABELS[sale.paymentMethod ?? ''] || sale.paymentMethod || '—'}
+                                            </td>
+                                            <td className="text-center">{sale.items?.length ?? 0}</td>
+                                            <td className="text-end fw-bold text-primary">
+                                                {formatCurrency(sale.total)}
                                             </td>
                                         </tr>
-                                    ) : (
-                                        salesReport!.data.map((sale) => (
-                                            <tr key={sale.id}>
-                                                <td className="fw-semibold">#{sale.id}</td>
-                                                <td>{formatDateTime(sale.createdAt)}</td>
-                                                <td>{sale.user?.name || sale.user?.email || '—'}</td>
-                                                <td className="text-center">{sale.items?.length ?? 0}</td>
-                                                <td className="text-end fw-bold text-primary">
-                                                    {formatCurrency(sale.total)}
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
+                                    ))
+                                )}
                                 </tbody>
                             </table>
                         </div>
@@ -485,60 +495,60 @@ export const ReportsPage = () => {
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
                                 <thead className="table-dark">
-                                    <tr>
-                                        <th>Código</th>
-                                        <th>Producto</th>
-                                        <th className="text-center">Stock</th>
-                                        <th className="text-center">Mínimo</th>
-                                        <th className="text-end">Costo</th>
-                                        <th className="text-end">Precio venta</th>
-                                        <th className="text-center">Estado</th>
-                                    </tr>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th className="text-center">Stock</th>
+                                    <th className="text-center">Mínimo</th>
+                                    <th className="text-end">Costo</th>
+                                    <th className="text-end">Precio venta</th>
+                                    <th className="text-center">Estado</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredInventory.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={7} className="text-center py-4 text-muted">
-                                                No hay productos para mostrar con este filtro.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        filteredInventory.map((product) => {
-                                            const isLow =
-                                                Number(product.stock) <= Number(product.minStock);
-                                            return (
-                                                <tr key={product.id}>
-                                                    <td className="text-muted small">
-                                                        {product.code || product.id}
-                                                    </td>
-                                                    <td className="fw-semibold">{product.name}</td>
-                                                    <td className="text-center fw-bold">
-                                                        {product.stock}
-                                                    </td>
-                                                    <td className="text-center text-muted">
-                                                        {product.minStock}
-                                                    </td>
-                                                    <td className="text-end">
-                                                        {formatCurrency(product.purchasePrice)}
-                                                    </td>
-                                                    <td className="text-end fw-semibold">
-                                                        {formatCurrency(product.salePrice)}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        {isLow ? (
-                                                            <span className="badge text-bg-warning">
+                                {filteredInventory.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="text-center py-4 text-muted">
+                                            No hay productos para mostrar con este filtro.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredInventory.map((product) => {
+                                        const isLow =
+                                            Number(product.stock) <= Number(product.minStock);
+                                        return (
+                                            <tr key={product.id}>
+                                                <td className="text-muted small">
+                                                    {product.sku || product.code || product.id}
+                                                </td>
+                                                <td className="fw-semibold">{product.name}</td>
+                                                <td className="text-center fw-bold">
+                                                    {product.stock}
+                                                </td>
+                                                <td className="text-center text-muted">
+                                                    {product.minStock}
+                                                </td>
+                                                <td className="text-end">
+                                                    {formatCurrency(product.purchasePrice)}
+                                                </td>
+                                                <td className="text-end fw-semibold">
+                                                    {formatCurrency(product.salePrice)}
+                                                </td>
+                                                <td className="text-center">
+                                                    {isLow ? (
+                                                        <span className="badge text-bg-warning">
                                                                 Stock bajo
                                                             </span>
-                                                        ) : (
-                                                            <span className="badge text-bg-success">
+                                                    ) : (
+                                                        <span className="badge text-bg-success">
                                                                 Disponible
                                                             </span>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
                                 </tbody>
                             </table>
                         </div>
@@ -546,38 +556,38 @@ export const ReportsPage = () => {
                         <div className="table-responsive">
                             <table className="table table-hover align-middle mb-0">
                                 <thead className="table-dark">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Código</th>
-                                        <th>Producto</th>
-                                        <th className="text-center">Unidades vendidas</th>
-                                        <th className="text-end">Ingresos generados</th>
-                                    </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th className="text-center">Unidades vendidas</th>
+                                    <th className="text-end">Subtotal (no IVA)</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {topProducts.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={5} className="text-center py-4 text-muted">
-                                                No hay datos de productos vendidos en este período.
+                                {topProducts.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="text-center py-4 text-muted">
+                                            No hay datos de productos vendidos en este período.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    topProducts.map((item, index) => (
+                                        <tr key={`${item.productId}-${index}`}>
+                                            <td className="fw-bold text-muted">{index + 1}</td>
+                                            <td className="small text-muted">
+                                                {item.productCode || item.productId}
+                                            </td>
+                                            <td className="fw-semibold">{item.productName}</td>
+                                            <td className="text-center fw-bold">
+                                                {item.totalQuantitySold}
+                                            </td>
+                                            <td className="text-end fw-bold text-primary">
+                                                {formatCurrency(item.totalRevenue)}
                                             </td>
                                         </tr>
-                                    ) : (
-                                        topProducts.map((item, index) => (
-                                            <tr key={`${item.productId}-${index}`}>
-                                                <td className="fw-bold text-muted">{index + 1}</td>
-                                                <td className="small text-muted">
-                                                    {item.productCode || item.productId}
-                                                </td>
-                                                <td className="fw-semibold">{item.productName}</td>
-                                                <td className="text-center fw-bold">
-                                                    {item.totalQuantitySold}
-                                                </td>
-                                                <td className="text-end fw-bold text-primary">
-                                                    {formatCurrency(item.totalRevenue)}
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
+                                    ))
+                                )}
                                 </tbody>
                             </table>
                         </div>

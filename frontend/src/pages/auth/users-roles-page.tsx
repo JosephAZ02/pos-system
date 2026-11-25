@@ -284,7 +284,7 @@ export const UsersRolesPage = () => {
                 </li>
             </ul>
 
-            {/* USUARIOS */}
+
 
             {activeTab === 'users' && (
                 <div className="row g-4">
@@ -293,12 +293,12 @@ export const UsersRolesPage = () => {
                             <div className="card-body p-0">
                                 <div className="table-responsive">
                                     <table className="table table-hover mb-0 align-middle">
-                                        <thead className="table-light">
+                                        <thead className="table-dark">
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Correo</th>
                                                 <th>Rol</th>
-                                                <th>Estado</th>
+
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -309,13 +309,8 @@ export const UsersRolesPage = () => {
                                                     <td>{user.name}</td>
                                                     <td>{user.email}</td>
                                                     <td>
-                                                        <span className="badge bg-secondary">
+                                                        <span className={`badge ${user.role?.name?.toLowerCase() === 'admin' ? 'bg-success' : 'bg-secondary'}`}>
                                                             {user.role?.name || 'Sin rol'}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span className={`badge ${user.isActive ? 'bg-success' : 'bg-danger'}`}>
-                                                            {user.isActive ? 'Activo' : 'Inactivo'}
                                                         </span>
                                                     </td>
                                                     <td>

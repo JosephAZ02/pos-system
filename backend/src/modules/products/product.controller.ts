@@ -42,6 +42,12 @@ export class ProductController {
         return this.productService.update(id, request);
     }
 
+    @Patch(':id/reactivate')
+    @RequirePermissions('products.update')
+    reactivate(@Param('id', ParseIntPipe) id: number) {
+        return this.productService.reactivate(id);
+    }
+
     @Delete(':id')
     @RequirePermissions('products.delete')
     remove(@Param('id', ParseIntPipe) id: number) {

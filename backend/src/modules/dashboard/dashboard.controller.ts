@@ -1,13 +1,12 @@
-import {Controller, Get, Query, UseGuards} from '@nestjs/common';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
-import {DashboardService} from './dashboard.service';
-import {DashboardFilterDto} from './dto/dashboard-filter.dto';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { DashboardService } from './dashboard.service';
+import { DashboardFilterDto } from './dto/dashboard-filter.dto';
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator';
 import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
-
-@ApiTags('dashboard')
+@ApiTags('Dashboard')
 @ApiBearerAuth()
 @Controller('dashboard')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -23,11 +22,8 @@ export class DashboardController {
 
     @Get('top-products')
     @RequirePermissions('dashboard.read')
-    getTopProducts(
-        @Query('limit') limit?: number,
-        @Query() filterDto?: DashboardFilterDto,
-    ) {
-        const parsedLimit = limit ? Number(limit) : 5;
-        return this.dashboardService.getTopSellingProducts(parsedLimit, filterDto);
+    getTopProducts(@Query() filterDto: DashboardFilterDto) {
+        const limit = filterDto.limit ?? 5;
+        return this.dashboardService.getTopSellingProducts(limit, filterDto);
     }
 }

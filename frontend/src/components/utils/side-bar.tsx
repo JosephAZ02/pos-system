@@ -3,7 +3,8 @@ import { useAuth } from '../../context/auth.context';
 import './side-bar.css';
 
 function SideBar() {
-    const { logout } = useAuth();
+    
+    const {user, logout } = useAuth();
 
     return (
         <aside className="sidebar">
@@ -17,7 +18,7 @@ function SideBar() {
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>
                     <i className="bi bi-speedometer2"></i>
-                    Panel de Control
+                    Dashboard
                 </NavLink>
 
                 <NavLink to="/products" className={({ isActive }) =>
@@ -41,12 +42,12 @@ function SideBar() {
                     Reportes
                 </NavLink>
 
-                <NavLink to="/users-roles" className={({ isActive }) =>
+                {user?.permissions?.includes('users.manage') && (<NavLink to="/users-roles" className={({ isActive }) =>
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>
                     <i className="bi bi-person"></i>
                     Usuarios y Roles
-                </NavLink>
+                </NavLink>)}
             </div>
 
             <div className="sidebar-footer">

@@ -3,14 +3,14 @@ import toast from 'react-hot-toast';
 import type {ICreateProductDto, IProductDto} from '@pos/shared';
 import {useAuth} from '../../context/auth.context';
 import {getErrorMessage} from '../../services/auth/api';
-import {createProduct, deleteProduct, getProducts, updateProduct} from '../../services/products.service';
+import {createProduct, deleteProduct, getProducts, reactivateProduct, updateProduct} from '../../services/products.service';
 import {showConfirm} from '../../components/utils/alerts';
 import {ProductTable} from '../../components/products/ProductTable';
 import {ProductFormModal} from '../../components/products/ProductFormModal';
 
 const ALL_CATEGORIES = 'Todas';
 
-function StatCard({label, value}: { label: string; value: number }) {
+function StatsCard({label, value}: { label: string; value: number }) {
     return (
         <div className="col-sm-6 col-xl-3">
             <div className="card shadow-sm">
@@ -146,6 +146,16 @@ export function ProductsPage() {
         }
     }
 
+    async function handleReactivate(product: IProductDto) {
+        try {
+            await reactivateProduct(product.id);
+            toast.success(`Producto "${product.name}" reactivado.`);
+            await loadProducts();
+        } catch (error) {
+            toast.error(getErrorMessage(error, 'No se pudo reactivar el producto.'));
+        }
+    }
+
     return (
         <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -170,10 +180,10 @@ export function ProductsPage() {
             </div>
 
             <div className="row g-3 mb-4">
-                <StatCard label="Productos activos" value={activeProducts.length}/>
-                <StatCard label="Stock bajo" value={lowStockCount}/>
-                <StatCard label="Agotados" value={outOfStockCount}/>
-                <StatCard label="Categorías" value={categories.length}/>
+                <StatsCard label="Productos activos" value={activeProducts.length}/>
+                <StatsCard label="Stock bajo" value={lowStockCount}/>
+                <StatsCard label="Agotados" value={outOfStockCount}/>
+                <StatsCard label="Categorías" value={categories.length}/>
             </div>
 
             <div className="card shadow-sm mb-4">
@@ -254,6 +264,7 @@ export function ProductsPage() {
                             products={filteredProducts}
                             onEdit={handleOpenEdit}
                             onDelete={handleDelete}
+                            onReactivate={handleReactivate}
                             canUpdate={canUpdate}
                             canDelete={canDelete}
                         />
