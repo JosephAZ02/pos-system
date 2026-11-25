@@ -3,7 +3,8 @@ import { useAuth } from '../../context/auth.context';
 import './side-bar.css';
 
 function SideBar() {
-    const { logout } = useAuth();
+    
+    const {user, logout } = useAuth();
 
     return (
         <aside className="sidebar">
@@ -41,12 +42,12 @@ function SideBar() {
                     Reportes
                 </NavLink>
 
-                <NavLink to="/users-roles" className={({ isActive }) =>
+                {user?.permissions?.includes('user.manage') && (<NavLink to="/users-roles" className={({ isActive }) =>
                     `sidebar-link ${isActive ? 'active' : ''}`
                 }>
                     <i className="bi bi-person"></i>
                     Usuarios y Roles
-                </NavLink>
+                </NavLink>)}
             </div>
 
             <div className="sidebar-footer">
