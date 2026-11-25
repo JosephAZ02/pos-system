@@ -309,7 +309,7 @@ export const UsersRolesPage = () => {
                                                     <td>{user.name}</td>
                                                     <td>{user.email}</td>
                                                     <td>
-                                                        <span className={`badge ${user.role?.name?.toLowerCase() === 'admin' ? 'bg-success' : 'bg-secondary'}`}>
+                                                        <span className={`badge ${user.role?.name?.toLowerCase() === 'Administrador' ? 'bg-success' : 'bg-secondary'}`}>
                                                             {user.role?.name || 'Sin rol'}
                                                         </span>
                                                     </td>
