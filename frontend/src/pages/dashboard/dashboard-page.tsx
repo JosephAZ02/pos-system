@@ -159,7 +159,7 @@ export function DashboardPage() {
                                             <th>SKU</th>
                                             <th>Producto</th>
                                             <th className="text-center">Unidades vendidas</th>
-                                            <th className="text-end">Total recaudado</th>
+                                            <th className="text-end">Subtotal (no IVA)</th>
                                         </tr>
                                         </thead>
                                         <tbody>

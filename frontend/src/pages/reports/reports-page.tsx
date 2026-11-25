@@ -561,7 +561,7 @@ export const ReportsPage = () => {
                                     <th>Código</th>
                                     <th>Producto</th>
                                     <th className="text-center">Unidades vendidas</th>
-                                    <th className="text-end">Ingresos generados</th>
+                                    <th className="text-end">Subtotal (no IVA)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
