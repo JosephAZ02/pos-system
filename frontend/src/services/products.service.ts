@@ -30,3 +30,8 @@ export async function deleteProduct(id: number): Promise<{ message: string }> {
     const response = await api.delete<{ message: string }>(`/products/${id}`);
     return response.data;
 }
+
+export async function reactivateProduct(id: number): Promise<IProductDto> {
+    const response = await api.patch<IProductDto>(`/products/${id}/reactivate`);
+    return response.data;
+}

@@ -45,7 +45,7 @@ export class CreateProductDto implements ICreateProductDto {
     stock: number;
 
     @ApiProperty()
-    @IsNumber({}, {message: 'El stock mínimo debe ser un número entero'})
+    @IsInt({message: 'El stock mínimo debe ser un número entero'})
     @Min(0)
     minStock: number;
 }

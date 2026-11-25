@@ -5,6 +5,7 @@ export interface ProductTableProps {
     products: IProductDto[];
     onEdit: (product: IProductDto) => void;
     onDelete: (product: IProductDto) => void;
+    onReactivate: (product: IProductDto) => void;
     canUpdate: boolean;
     canDelete: boolean;
 }
@@ -19,7 +20,7 @@ function stockBadge(product: IProductDto) {
     return <span className="badge text-bg-success">Disponible</span>;
 }
 
-export function ProductTable({products, onEdit, onDelete, canUpdate, canDelete}: ProductTableProps) {
+export function ProductTable({products, onEdit, onDelete, onReactivate, canUpdate, canDelete}: ProductTableProps) {
     const showActions = canUpdate || canDelete;
 
     if (products.length === 0) {
@@ -53,7 +54,7 @@ export function ProductTable({products, onEdit, onDelete, canUpdate, canDelete}:
                     const isLowStock = product.isActive && product.stock <= product.minStock;
 
                     return (
-                        <tr key={product.id} className={!product.isActive ? 'table-secondary text-muted' : ''}>
+                        <tr key={product.id} className={!product.isActive ? 'opacity-50' : ''}>
                             <td className="text-muted">{product.sku}</td>
 
                             <td>
@@ -85,31 +86,43 @@ export function ProductTable({products, onEdit, onDelete, canUpdate, canDelete}:
 
                             {showActions && (
                                 <td className="text-end">
-                                    <div className="btn-group btn-group-sm">
-                                        {canUpdate && (
+                                    {!product.isActive ? (
+                                        canUpdate && (
                                             <button
                                                 type="button"
-                                                className="btn btn-outline-primary"
-                                                disabled={!product.isActive}
-                                                title={product.isActive ? 'Editar producto' : 'Producto inactivo'}
-                                                onClick={() => onEdit(product)}
+                                                className="btn btn-sm btn-outline-success"
+                                                title="Reactivar producto"
+                                                onClick={() => onReactivate(product)}
                                             >
-                                                <i className="bi bi-pencil"/>
+                                                <i className="bi bi-arrow-counterclockwise me-1"/>
+                                                Reactivar
                                             </button>
-                                        )}
+                                        )
+                                    ) : (
+                                        <div className="btn-group btn-group-sm">
+                                            {canUpdate && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-primary"
+                                                    title="Editar producto"
+                                                    onClick={() => onEdit(product)}
+                                                >
+                                                    <i className="bi bi-pencil"/>
+                                                </button>
+                                            )}
 
-                                        {canDelete && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-danger"
-                                                disabled={!product.isActive}
-                                                title={product.isActive ? 'Desactivar producto' : 'Ya está inactivo'}
-                                                onClick={() => onDelete(product)}
-                                            >
-                                                <i className="bi bi-trash"/>
-                                            </button>
-                                        )}
-                                    </div>
+                                            {canDelete && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-danger"
+                                                    title="Desactivar producto"
+                                                    onClick={() => onDelete(product)}
+                                                >
+                                                    <i className="bi bi-trash"/>
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </td>
                             )}
                         </tr>

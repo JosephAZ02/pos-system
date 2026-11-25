@@ -13,6 +13,25 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+        const requestUrl: string = error.config?.url ?? '';
+
+        if (status === 401 && !requestUrl.includes('/auth/login')) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+
+            if (window.location.pathname !== '/login') {
+                window.location.replace('/login');
+            }
+        }
+
+        return Promise.reject(error);
+    },
+);
+
 export function getErrorMessage(error: unknown, fallback: string): string {
     if (!axios.isAxiosError(error)) {
         return fallback;

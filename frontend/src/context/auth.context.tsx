@@ -11,11 +11,28 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
+function isTokenExpired(token: string): boolean {
+    try {
+        const parts = token.split('.');
+        if (parts.length !== 3) return true;
+
+        const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(atob(base64)) as { exp?: number };
+
+        if (typeof payload.exp !== 'number') return false;
+        return payload.exp * 1000 <= Date.now();
+    } catch {
+        return true;
+    }
+}
+
 function loadStoredUser(): UserDto | null {
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 
-    if (!token || !storedUser) {
+    if (!token || !storedUser || isTokenExpired(token)) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         return null;
     }
 
