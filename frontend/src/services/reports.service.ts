@@ -1,4 +1,4 @@
-import { api } from './auth/api';
+import {api} from './auth/api';
 
 export interface ReportFilterParams {
     startDate?: string;
@@ -37,6 +37,7 @@ export interface SalesReportResponse {
 
 export interface InventoryProductItem {
     id: number | string;
+    sku?: string;
     code?: string;
     name: string;
     stock: number;
@@ -75,21 +76,21 @@ const cleanParams = (params?: ReportFilterParams) => {
 export const getSalesReport = async (
     params?: ReportFilterParams,
 ): Promise<SalesReportResponse> => {
-    const { data } = await api.get<SalesReportResponse>('/reports/sales', {
+    const {data} = await api.get<SalesReportResponse>('/reports/sales', {
         params: cleanParams(params),
     });
     return data;
 };
 
 export const getInventoryReport = async (): Promise<InventoryReportResponse> => {
-    const { data } = await api.get<InventoryReportResponse>('/reports/inventory');
+    const {data} = await api.get<InventoryReportResponse>('/reports/inventory');
     return data;
 };
 
 export const getTopProductsReport = async (
     params?: ReportFilterParams,
 ): Promise<TopProductItem[]> => {
-    const { data } = await api.get<TopProductItem[]>('/reports/top-products', {
+    const {data} = await api.get<TopProductItem[]>('/reports/top-products', {
         params: cleanParams(params),
     });
     return data;
